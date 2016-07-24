@@ -1,6 +1,6 @@
 # Restaurant API
 # Sample input - name: Jollibee, branch: 5th Ave. BGC, operating_hours: 24hours, classification: fine dining
-from flask import Flask, Blueprint, url_for, request, abort, json
+from flask import Flask, Blueprint, url_for, request, abort, json, Response
 from pymongo import MongoClient
 
 RESTAURANT_API = Blueprint('RESTAURANT_API', __name__)
@@ -15,7 +15,7 @@ def get_restaurants():
 	restaurants = db.restaurant.find({}, {'_id':0})
 	restaurant_list = [i for i in restaurants]
 
-	return json.dumps(restaurant_list)
+	return Response(json.dumps(restaurant_list),  mimetype='application/json')
 
 @RESTAURANT_API.route('/add', methods = ['POST'])
 def add_restaurant():
@@ -29,7 +29,7 @@ def add_restaurant():
 		# name and branch must be unique
 		if db.restaurant.find_one({'name': name, 'branch': branch}):
 
- 			return json.dumps({"Duplicate error": "Data cannot be repeated."})
+ 			return Response(json.dumps({"Duplicate error": "Data cannot be repeated."}),  mimetype='application/json')
 
  		else:
 
@@ -52,12 +52,12 @@ def add_restaurant():
 			# insert_one returns acknowledged = true else false
 			if(result.acknowledged):
 				response = json.dumps({"http_status_code": [ 201, "Created" ],"message": "The "+name+" restaurant was successfully added."})
-				return response
+				return Response(response,  mimetype='application/json')
 			else:
 			    response = json.dumps({"message": "Failed to add restaurant."})
-			    return response
+			    return Response(response,  mimetype='application/json')
 	else:
-		return json.dumps({"error": "Please input data."})
+		return Response(json.dumps({"error": "Please input data."}),  mimetype='application/json')
 
 @RESTAURANT_API.route('/edit', methods = ['POST'])
 def edit_restaurant():
@@ -77,16 +77,16 @@ def edit_restaurant():
 			# update_one returns acknowledged = true else false
 			if(result.acknowledged):
 				response = json.dumps({"http_status_code": [ 200, "OK" ],"message": "The "+name+" restaurant was successfully updated."})
-				return response
+				return Response(response,  mimetype='application/json')
 			else:
 			    response = json.dumps({"message": "Failed to update restaurant."})
-			    return response
+			    return Response(response,  mimetype='application/json')
 
 		else:
-			return json.dumps({"error": "Data do not exist."})
+			return Response(json.dumps({"error": "Data do not exist."}),  mimetype='application/json')
 
 	else:
-		return json.dumps({"error": "Please input data."})
+		return Response(json.dumps({"error": "Please input data."}),  mimetype='application/json')
 
 @RESTAURANT_API.route('/delete', methods = ['POST'])
 def delete_restaurant():
@@ -105,13 +105,13 @@ def delete_restaurant():
 			# delete_one returns acknowledged = true else false
 			if(result.acknowledged):
 				response = json.dumps({"http_status_code": [ 200, "OK" ],"message": "The "+name+" restaurant was successfully deleted."})
-				return response
+				return Response(response,  mimetype='application/json')
 			else:
 			    response = json.dumps({"message": "Failed to delete restaurant."})
-			    return response
+			    return Response(response,  mimetype='application/json')
 		else:
-			return json.dumps({"error": "Data do not exist."})
+			return Response(json.dumps({"error": "Data do not exist."}),  mimetype='application/json')
 
 	else:
-		return json.dumps({"error": "Please input data."})
+		return Response(json.dumps({"error": "Please input data."}),  mimetype='application/json')
 
