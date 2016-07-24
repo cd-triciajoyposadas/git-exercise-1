@@ -1,0 +1,14 @@
+<link rel = "stylesheet" type="text/css" href="{{url_for('static', filename = "css/style.css")}}"/>
+
+{%extends "layouts/main.html"%}
+
+{%block main_content%}
+
+	<h2>LIST OF ANIMALS</h2>
+	
+	<br>
+	{%for i in name%}
+	<h3>Name : {{i['Name']}} Type : {{i['Type']}} Color: {{i['Color']}}
+		Age : {{i['Age']}}<br>
+	{%endfor%}
+{%endblock%}
