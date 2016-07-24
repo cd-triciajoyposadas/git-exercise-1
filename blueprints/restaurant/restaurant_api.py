@@ -1,4 +1,5 @@
 # Restaurant API
+# Sample input - name: Jollibee, branch: 5th Ave. BGC, operating_hours: 24hours, classification: fine dining
 from flask import Flask, Blueprint, url_for, request, abort, json
 from pymongo import MongoClient
 
