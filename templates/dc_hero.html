@@ -1,0 +1,15 @@
+{% extends "layouts/main_layout.html" %}
+
+{% block main_content %}
+
+
+				<h1>DC HEROES</h1>
+
+				{% for superhero_list in heroes %}
+					{{superhero_list}} <br>
+				{% endfor %}
+
+{% endblock %}
+
+
+
