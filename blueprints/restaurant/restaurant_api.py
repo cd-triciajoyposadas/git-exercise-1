@@ -32,7 +32,7 @@ def add_restaurant():
 
  		else:
 
- 			#set _id to auto incremented numbers
+ 			#set _uid to auto incremented numbers
 			db.counters.insert(
 			   {
 			      "_uid": "userid",
