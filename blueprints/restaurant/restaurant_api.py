@@ -1,6 +1,5 @@
 # Restaurant API
 from flask import Flask, Blueprint, url_for, request, abort, json
-from bson.objectid import ObjectId
 from pymongo import MongoClient
 
 RESTAURANT_API = Blueprint('RESTAURANT_API', __name__)
@@ -82,7 +81,7 @@ def edit_restaurant():
 			    return response
 
 		else:
-			return json.dumps({"Error": "Data do not exist."})
+			return json.dumps({"error": "Data do not exist."})
 
 	else:
 		return json.dumps({"error": "Please input data."})
@@ -109,7 +108,7 @@ def delete_restaurant():
 			    response = json.dumps({"message": "Failed to delete restaurant."})
 			    return response
 		else:
-			return json.dumps({"Error": "Data do not exist."})
+			return json.dumps({"error": "Data do not exist."})
 
 	else:
 		return json.dumps({"error": "Please input data."})
