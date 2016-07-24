@@ -11,6 +11,7 @@ db = client.restaurant
 @RESTAURANT_API.route('/list')
 def get_restaurants():
 
+	#display auto incremented number(_uid) instead of ObjectId(_id)
 	restaurants = db.restaurant.find({}, {'_id':0})
 	restaurant_list = [i for i in restaurants]
 
