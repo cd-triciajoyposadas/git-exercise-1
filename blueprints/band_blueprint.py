@@ -7,7 +7,7 @@ import json
 BAND_API = Blueprint('BAND_API', __name__)
 
 #KEYS
-DATA = 'data'
+ENTITY = 'entity'
 BAND_NAME = 'band_name'
 BAND_GENRE = 'band_genre'
 BAND_MEMBERS = 'band_members'
@@ -15,7 +15,7 @@ BAND_BIRTHYEAR = 'band_birthyear'
 
 #CREATE CONNECTION
 client = MongoClient()
-db = client[DATA]
+db = client[ENTITY]
 
 @BAND_API.route('/list/')
 def get_band_list():
@@ -65,22 +65,25 @@ def edit_band_info():
 
 	if request.form:
 		band_name = request.form[BAND_NAME]
-		band_genre = request.form[BAND_GENRE]
-		band_members = request.form[BAND_MEMBERS]
-		band_birthyear = request.form[BAND_BIRTHYEAR]
+		if db.bands.find_one({BAND_NAME : band_name}):
+			band_genre = request.form[BAND_GENRE]
+			band_members = request.form[BAND_MEMBERS]
+			band_birthyear = request.form[BAND_BIRTHYEAR]
 
-		result_post = db.bands.update_one(
-			{BAND_NAME : band_name},
-			{
-			"$set": {
-				BAND_GENRE: band_genre,
-				BAND_MEMBERS: band_members,
-				BAND_BIRTHYEAR: BAND_BIRTHYEAR
-			}
-			}
-			)
-		return jsonify(http_status_code = (200, "OK"), message = "The "+band_name+" band was successfully updated")\
-			if result_post else jsonify(message = "failed to update band") 
+			result_post = db.bands.update_one(
+				{BAND_NAME : band_name},
+				{
+				"$set": {
+					BAND_GENRE: band_genre,
+					BAND_MEMBERS: band_members,
+					BAND_BIRTHYEAR: BAND_BIRTHYEAR
+				}
+				}
+				)
+			return jsonify(http_status_code = (200, "OK"), message = "The "+band_name+" band was successfully updated")\
+				if result_post else jsonify(message = "failed to update band") 
+		else:
+			return jsonify(response = "band "+ band_name + " not found!")
 	else:
 		return jsonify(response = "NO DATA RECIEVED")
 
@@ -90,11 +93,12 @@ def delete_band_here():
 
 	if request.form:
 		band_name = request.form[BAND_NAME]
-
-		result_post = db.bands.delete_one({BAND_NAME : band_name})
-
-		return jsonify(http_status_code = (200, "OK"), message = "The "+band_name+" band was successfully deleted")\
-			if result_post else jsonify(message = "failed to delete band") 
+		if db.bands.find_one({BAND_NAME : band_name}):
+			result_post = db.bands.delete_one({BAND_NAME : band_name})
+			return jsonify(http_status_code = (200, "OK"), message = "The "+band_name+" band was successfully deleted")\
+				if result_post else jsonify(message = "failed to delete band") 
+		else:
+			return jsonify(response = "band "+ band_name + " not found!")
 	else:
 		return jsonify(response = "NO DATA RECIEVED")
 
