@@ -54,7 +54,7 @@ def add_building():
     response = {'http_status_code': (
         201, 'Created'), 'message': "The building was successfully added"}
     if new_building.acknowledged:
-        return json.dumps(response)
+        return jsonify(response)
 
 
 @BUILDING_API.route('/edit', methods=['POST'])
@@ -73,12 +73,11 @@ def edit_building():
     {"building_name" : building_name},
     { "$set": { "building_year": building_year, "building_type": building_type, "building_location": building_location}})
 
-    response = {'http_status_code': (
-        200, 'OK'), 'message': "The building was successfully edited", }
+    response = {'http_status_code': (200, 'OK'), 'message': "The building was successfully edited", }
 
-    modified = WriteResult.getN()
-    if modified==1:
-        return json.dumps(response)
+    #modified = WriteResult.getN()
+    if db.building.acknowledged:
+        return jsonify(response)
 
 
 @BUILDING_API.route('/delete', methods=['POST'])
@@ -92,10 +91,8 @@ def delete_building():
     building_year = request.form['building_year']
     building_type = request.form['building_type']
 
-    db.restaurants.remove( { "borough": "Queens" }, { justOne: true } )
-    WriteResult({ "nRemoved" : 1 })
+    db.building.remove( { "building_name": building_name }, { 'justOne': 'True' } )
 
-    response = {'http_status_code': (
-        200, 'OK'), 'message': "The building was successfully deleted"}
-
-    return json.dumps(response)
+    response = {'http_status_code': (200, 'OK'), 'message': "The building was successfully deleted"}
+    if db.building.acknowledged:
+        return jsonify(response)
