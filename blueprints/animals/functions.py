@@ -5,6 +5,7 @@ c = MongoClient()
 from flask import jsonify
 import json
 from bson import json_util
+from flask import Response
 
 FUNCTIONS_API = Blueprint('FUNCTIONS_API',__name__)
 
@@ -52,8 +53,8 @@ def edit():
 @FUNCTIONS_API.route('/list')
 def list():
 	# data = [i for i in c.entity.animals.find({})]
-	data = [json.loads(json_util.dumps(i)) for i in c.entity.animals.find()]
+	data =  [json.loads(json_util.dumps(i)) for i in c.entity.animals.find()]
 
-	return jsonify(data)
+	return jsonify(*data)
 	# return json.dumps(data,  sort_keys=True, indent=4, default=json_util.default)
 
