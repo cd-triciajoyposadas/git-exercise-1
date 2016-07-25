@@ -1,5 +1,4 @@
 from flask import Flask, Blueprint, url_for, render_template,request, abort, session, redirect, jsonify
-import pymongo
 from pymongo import MongoClient
 import json
 from blueprints.hero.superhero_api import SUPERHERO_API
