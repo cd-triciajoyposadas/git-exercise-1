@@ -34,7 +34,7 @@ def add_restaurant():
 
  		else:
 
- 			#set _uid to auto incremented numbers
+ 			# create collection counters for auto incremented numbers
 			db.counters.insert(
 			   {
 			      "_uid": "userid",
@@ -42,12 +42,14 @@ def add_restaurant():
 			   }
 			)
 
+			# get sequence numbers
 			ret = db.counters.find_and_modify(
 		        query = { "_uid": "userid" },
 		        update = { "$inc": { "seq": 1 } },
 		        new = True
 		   	).get('seq')
 
+			#set _uid to auto incremented numbers(ret)
 			result = restaurant.insert_one({ "_uid": ret, "name": name, "branch": branch, "operating_hours": operating_hours, "classification": classification})
 
 			# insert_one returns acknowledged = true else false
