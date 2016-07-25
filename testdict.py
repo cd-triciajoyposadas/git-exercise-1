@@ -8,17 +8,18 @@ db = client.building
 http_status_code = {(201, 'Created'): "The building was successfully added",
                     (200, 'OK'): "The building was successfully edited",
                     (200, 'OK'): "The building was successfully deleted"}
-http_stuff = {'add':{'code':[201,'Created'], 'message': "The building was successfully added"},
-              'edit':{'code':[200,'OK'], 'message': "The building was successfully edited"},
-              'delete':{'code':[200,'OK'], 'message': "The building was successfully deleted"}}
-#http_stuff['delete']=['code': [200, 'OK'], 'message': "deleted"]
+http_stuff = {'add': {'code': [201, 'Created'], 'message': "The building was successfully added"},
+              'edit': {'code': [200, 'OK'], 'message': "The building was successfully edited"},
+              'delete': {'code': [200, 'OK'], 'message': "The building was successfully deleted"}}
+# http_stuff['delete']=['code': [200, 'OK'], 'message': "deleted"]
 # http_stuff['delete']='code'[200, 'OK']
 # http_stuff.message['delete']= "The building was successfully deleted"
 
 building_list = {}
 
 building_id = 1
-new_building = db.building.insert_one({'name':'primus', 'locat': 'tarlac', 'year': '1996', 'type': 'pogi'})
+new_building = db.building.insert_one(
+    {'name': 'primus', 'locat': 'tarlac', 'year': '1996', 'type': 'pogi'})
 buildings = db.building.find()
 for word in buildings:
     print word

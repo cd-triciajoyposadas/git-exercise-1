@@ -1,6 +1,7 @@
 from flask import Flask, url_for, request, render_template, redirect, abort, session, Blueprint
 from pymongo import MongoClient
-from flask import json
+from flask import json, jsonify
+from bson import BSON, json_util
 
 BUILDING_API = Blueprint('BUILDING_API', __name__)
 
@@ -10,19 +11,30 @@ BUILDING_API = Blueprint('BUILDING_API', __name__)
 
 #json_http_status = json.dumps(http_status)
 
-client=MongoClient()
+client = MongoClient()
 db = client.entity
-#hmm convert siguro json or idk
-#retrieve data from server
-#convert to python
-#add to dicts
+# hmm convert siguro json or idk
+# retrieve data from server
+# convert to python
+# add to dicts
+
 
 @BUILDING_API.route('/list')
 def list_buildings():
 
-    buildings = [word for word in db.entity.building.find( { type: '_id' }, { type:0 } )]
-    return 'hahahaha'
-    return json.dumps(buildings)
+    # buildings = {}
+    # _idman = 1
+    # for word in
+    #
+    #
+    #     buildings = word
+    buildings = [json.loads(json_util.dumps(build, sort_keys=True, indent=4)) for build in db.building.find()]
+
+
+#    return jsonify(buildings)
+
+#    return jsonify(buildings)
+#, sort_keys=True, indent=4, default=json_util.default)
 
 @BUILDING_API.route('/add', methods=['POST'])
 def add_building():
@@ -32,33 +44,58 @@ def add_building():
     building_year = request.form['building_year']
     building_type = request.form['building_type']
 
-    #add to database
-    new_building = db.entity.building.insert_one({'building_name': building_name,
-                    'building_location': building_location,
-                    'building_year': building_year,
-                    'building_type': building_type})
+    # add to database
+    new_building = db.building.insert_one(
+        {'building_name': building_name,
+         'building_location': building_location,
+         'building_year': building_year,
+         'building_type': building_type})
 
-    response = {'http_status_code':(201,'Created'), 'message': "The building was successfully added"}
+    response = {'http_status_code': (
+        201, 'Created'), 'message': "The building was successfully added"}
     if new_building.acknowledged:
         return json.dumps(response)
 
-@BUILDING_API.route('/edit')
+
+@BUILDING_API.route('/edit', methods=['POST'])
 def edit_building():
 
-    #find the shiz
-    #edit the shiz
+    # find the shiz
+    # edit the shiz
 
-    response = {'http_status_code':(200,'OK'), 'message': "The building was successfully edited",}
+    building_name = request.form['building_name']
+    building_location = request.form['building_location']
+    building_year = request.form['building_year']
+    building_type = request.form['building_type']
 
-    return json.dumps(response)
 
-@BUILDING_API.route('/delete')
+    db.building.update(
+    {"building_name" : building_name},
+    { "$set": { "building_year": building_year, "building_type": building_type, "building_location": building_location}})
+
+    response = {'http_status_code': (
+        200, 'OK'), 'message': "The building was successfully edited", }
+
+    modified = WriteResult.getN()
+    if modified==1:
+        return json.dumps(response)
+
+
+@BUILDING_API.route('/delete', methods=['POST'])
 def delete_building():
 
+    # find the shiz
+    # delete the shiz
 
+    building_name = request.form['building_name']
+    building_location = request.form['building_location']
+    building_year = request.form['building_year']
+    building_type = request.form['building_type']
 
-    #find the shiz
-    #delete the shiz
-    response = {'http_status_code':(200,'OK'), 'message': "The building was successfully deleted"}
+    db.restaurants.remove( { "borough": "Queens" }, { justOne: true } )
+    WriteResult({ "nRemoved" : 1 })
+
+    response = {'http_status_code': (
+        200, 'OK'), 'message': "The building was successfully deleted"}
 
     return json.dumps(response)
