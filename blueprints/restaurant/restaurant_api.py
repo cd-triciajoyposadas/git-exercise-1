@@ -6,13 +6,14 @@ from pymongo import MongoClient
 RESTAURANT_API = Blueprint('RESTAURANT_API', __name__)
 
 client = MongoClient()
-db = client.restaurant
+db = client.entity #db
+restaurant = db.restaurant #collection
 
 @RESTAURANT_API.route('/list')
 def get_restaurants():
 
 	#display auto incremented number(_uid) instead of ObjectId(_id)
-	restaurants = db.restaurant.find({}, {'_id':0})
+	restaurants = restaurant.find({}, {'_id':0})
 	restaurant_list = [i for i in restaurants]
 
 	return Response(json.dumps(restaurant_list),  mimetype='application/json')
@@ -27,7 +28,7 @@ def add_restaurant():
 		classification = request.form['classification']
 
 		# name and branch must be unique
-		if db.restaurant.find_one({'name': name, 'branch': branch}):
+		if restaurant.find_one({'name': name, 'branch': branch}):
 
  			return Response(json.dumps({"Duplicate error": "Data cannot be repeated."}),  mimetype='application/json')
 
@@ -47,7 +48,7 @@ def add_restaurant():
 		        new = True
 		   	).get('seq')
 
-			result = db.restaurant.insert_one({ "_uid": ret, "name": name, "branch": branch, "operating_hours": operating_hours, "classification": classification})
+			result = restaurant.insert_one({ "_uid": ret, "name": name, "branch": branch, "operating_hours": operating_hours, "classification": classification})
 
 			# insert_one returns acknowledged = true else false
 			if(result.acknowledged):
@@ -69,10 +70,10 @@ def edit_restaurant():
 		classification = request.form['classification']
 
 		#check if data exist
-		if db.restaurant.find_one({'name': name, 'branch': branch}):
+		if restaurant.find_one({'name': name, 'branch': branch}):
 
 			# update data from unique name and branch
-			result = db.restaurant.update_one({"name": name, "branch": branch}, {"$set": { "operating_hours": operating_hours, "classification": classification}})
+			result = restaurant.update_one({"name": name, "branch": branch}, {"$set": { "operating_hours": operating_hours, "classification": classification}})
 
 			# update_one returns acknowledged = true else false
 			if(result.acknowledged):
@@ -97,10 +98,10 @@ def delete_restaurant():
 		branch = request.form['branch']
 
 		#check if data exist
-		if db.restaurant.find_one({'name': name, 'branch': branch}):
+		if restaurant.find_one({'name': name, 'branch': branch}):
 
 			# delete data from unique name and branch
-			result = db.restaurant.delete_one({'name' : name, 'branch': branch})
+			result = restaurant.delete_one({'name' : name, 'branch': branch})
 
 			# delete_one returns acknowledged = true else false
 			if(result.acknowledged):
