@@ -1,0 +1,9 @@
+{%extends "layouts/main_layout.html" %}
+
+{% block main_content %}
+    <h1>Movies</h1>
+    {% for mubi in movies %}
+    {{mubi}}
+    <br />
+    {% endfor %}
+{% endblock %}
